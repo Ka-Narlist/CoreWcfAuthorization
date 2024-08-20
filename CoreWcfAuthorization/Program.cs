@@ -5,6 +5,7 @@ using CoreWCF.Description;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using System.Web.Services.Description;
 using CoreWcfAuthorization.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CoreWcfAuthorization
 {
@@ -19,8 +20,14 @@ namespace CoreWcfAuthorization
             {
                 options.AddPolicy("Policy1", policy =>
                 {
-                    policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid", "xyz");
+                    policy.RequireAuthenticatedUser()
+                          .RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid", "xyz");
                 });
+
+                //options.AddPolicy("Policy1", new AuthorizationPolicyBuilder(NegotiateDefaults.AuthenticationScheme)
+                //                                .RequireAuthenticatedUser()
+                //                                .RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/groupsid", "xyz")
+                //                                .Build());
             });
 
             builder.Services.AddLogging(builder =>
